@@ -1,7 +1,11 @@
 <template>
+  <!-- 钱掉落的组件  -->
+  <moneyDown />
   <div class="container">
     <!-- <div style="text-align:center;font-size:40px;color:red;letter-spacing:14px;">明均时钟</div> -->
     <div class="date-info">{{ displayDate }}</div>
+    <!-- 添加考试倒计时 -->
+    <div class="exam-countdown">距离<span style="color: greenyellow">2025年初级会计考试</span>还有 <span style="color: yellow">{{ examCountdown }}</span> 天</div>
     <div class="clock" id="clock" v-html="displayTime"></div>
     <div class="weather-info">
       <template v-if="weatherData">
@@ -17,7 +21,7 @@
       <div v-for="(item, index) in forecastData" :key="index" class="forecast-item">
         <div>{{ item.date }}</div>
         <div>{{ item.tempMin }}°C ~ {{ item.tempMax }}°C</div>
-        <div>{{ item.textDay }}</div>
+        <div>{{getDayOfWeek(item.date)}} {{ item.textDay }}</div>
       </div>
     </div>
     <div class="button-container">
@@ -28,10 +32,28 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import axios from 'axios'
+import moneyDown from "@/components/moneyDown.vue"
 
+const  getDayOfWeek = (dateString: string) => {
+  // 创建一个 Date 对象
+  const date = new Date(dateString);
+
+  // 获取星期几，其中 0 表示星期日，1 表示星期一，以此类推
+  const dayOfWeek = date.getDay();
+
+  // 将数字转换为星期几的名称
+  const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  return days[dayOfWeek];
+}
+
+// 使用示例
+const dateString = "2025-03-07";
+const dayOfWeek = getDayOfWeek(dateString);
+console.log(dayOfWeek); // 输出: 星期五
 // 替换成您的和风天气 API Key
 const WEATHER_API_KEY = 'a150aca091d84cc68690ca3781e6a9a6'
 const LOCATION = ref('') // 所在城市的 ID
@@ -141,9 +163,9 @@ const createMoneyElement = () => {
   const moneySymbols = ['💰', '💵', '💴', '💶', '💷']
   money.innerHTML = moneySymbols[Math.floor(Math.random() * moneySymbols.length)]
   
-  // 随机起始位置
-  const startLeft = Math.random() * 100
-  money.style.left = `${startLeft}vw`
+  // 随机起始位置（横向）
+  const randomX = Math.random() * window.innerWidth
+  money.style.left = `${randomX}px`
   
   // 随机大小
   money.style.fontSize = Math.random() * 15 + 15 + 'px'
@@ -151,8 +173,9 @@ const createMoneyElement = () => {
   // 随机动画持续时间
   money.style.animationDuration = Math.random() * 3 + 4 + 's'
   
-  // 随机摆动幅度
-  const swayAmount = Math.random() * 100 + 50
+  // 随机摆动方向和幅度
+  const swayDirection = Math.random() > 0.5 ? 1 : -1
+  const swayAmount = (Math.random() * 100 + 50) * swayDirection
   money.style.setProperty('--sway-amount', `${swayAmount}px`)
   
   // 随机延迟开始时间
@@ -166,8 +189,12 @@ const createMoneyElement = () => {
 
 const autoMakeItRain = () => {
   if (!moneyContainer.value) return
-  const money = createMoneyElement()
-  moneyContainer.value.appendChild(money)
+  // 同时创建多个钱币，增加随机性
+  const count = Math.floor(Math.random() * 3) + 1 // 随机1-3个
+  for (let i = 0; i < count; i++) {
+    const money = createMoneyElement()
+    moneyContainer.value.appendChild(money)
+  }
 }
 
 onMounted(async () => {
@@ -182,7 +209,7 @@ onMounted(async () => {
     const nextInterval = Math.random() * 2000 + 1000 // 1-3秒随机间隔
     moneyTimer.value = setTimeout(startAutoRain, nextInterval)
   }
-  startAutoRain()
+  // startAutoRain()
 })
 
 onUnmounted(() => {
@@ -194,7 +221,14 @@ onUnmounted(() => {
   }
 })
 
-// 删除原来的 makeItRain 方法
+// 添加考试倒计时计算
+const examDate = new Date('2025-05-17')
+const examCountdown = computed(() => {
+  const today = new Date()
+  const diffTime = examDate.getTime() - today.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+})
 </script>
 
 <style scoped lang="scss">
@@ -387,21 +421,22 @@ body {
   opacity: 0.8;
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   will-change: transform;
+  transform-origin: center;
 }
 
 @keyframes snowfall {
   0% {
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(0) rotate(0deg);
     opacity: 0;
   }
   10% {
     opacity: 1;
   }
   50% {
-    transform: translateY(50vh) translateX(var(--sway-amount));
+    transform: translateY(50vh) translateX(var(--sway-amount)) rotate(180deg);
   }
   100% {
-    transform: translateY(105vh) translateX(calc(var(--sway-amount) * -0.5));
+    transform: translateY(105vh) translateX(calc(var(--sway-amount) * -0.8)) rotate(360deg);
     opacity: 0.8;
   }
 }
@@ -410,5 +445,25 @@ body {
 .button-container {
   position: relative;
   z-index: 1001;
+}
+
+.exam-countdown {
+  color: #ff6b6b;
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+@media screen and (max-width: 768px) {
+  .exam-countdown {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .exam-countdown {
+    font-size: 20px;
+  }
 }
 </style>
