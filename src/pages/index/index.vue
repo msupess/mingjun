@@ -3,10 +3,9 @@
   <moneyDown />
   <div class="container">
     <!-- <div style="text-align:center;font-size:40px;color:red;letter-spacing:14px;">明均时钟</div> -->
-    <div class="date-info">{{ displayDate }}</div>
     <!-- 添加考试倒计时 -->
     <div class="exam-countdown">距离<span style="color: greenyellow">2025年初级会计考试</span>还有 <span style="color: yellow">{{ examCountdown }}</span> 天</div>
-    <div class="clock" id="clock" v-html="displayTime"></div>
+    <clock />
     <div class="weather-info">
       <template v-if="weatherData">
         <div class="current-weather">
@@ -24,10 +23,7 @@
         <div>{{getDayOfWeek(item.date)}} {{ item.textDay }}</div>
       </div>
     </div>
-    <div class="button-container">
-      <button class="toggle-button" @click="toggleSeconds">{{ showSeconds ? '隐藏秒数' : '显示秒数' }}</button>
-      <button class="toggle-button" @click="toggleFullscreen">全屏切换</button>
-    </div>
+   
     <div class="money-container" ref="moneyContainer"></div>
   </div>
 </template>
@@ -37,6 +33,7 @@
 import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import axios from 'axios'
 import moneyDown from "@/components/moneyDown.vue"
+import clock from "@/components/clock.vue"
 
 const  getDayOfWeek = (dateString: string) => {
   // 创建一个 Date 对象
@@ -58,39 +55,9 @@ console.log(dayOfWeek); // 输出: 星期五
 const WEATHER_API_KEY = 'a150aca091d84cc68690ca3781e6a9a6'
 const LOCATION = ref('') // 所在城市的 ID
 
-const showSeconds = ref(true)
-const timer = ref(null)
-const currentTime = ref(new Date())
 const weatherData = ref(null)
 const forecastData = ref([])
 let locationInfo = reactive({})
-
-const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-
-const displayDate = computed(() => {
-  const date = currentTime.value
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const weekDay = weekDays[date.getDay()]
-  return `${year}年${month}月${day}日 ${weekDay}`
-})
-
-const displayTime = computed(() => {
-  const hours = String(currentTime.value.getHours()).padStart(2, '0')
-  const minutes = String(currentTime.value.getMinutes()).padStart(2, '0')
-  const seconds = String(currentTime.value.getSeconds()).padStart(2, '0')
-
-  return showSeconds.value
-      ? `${hours}<span class="colon">:</span>${minutes}<span class="colon">:</span>${seconds}`
-      : `${hours}<span class="colon">:</span>${minutes}`
-})
-
-const updateClock = () => {
-  timer.value = setInterval(() => {
-    currentTime.value = new Date()
-  }, 1000)
-}
 
 const getCityId = async (cityName: string) => {
   try {
@@ -141,18 +108,6 @@ const fetchWeather = async () => {
   }
 }
 
-const toggleSeconds = () => {
-  showSeconds.value = !showSeconds.value
-}
-
-const toggleFullscreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
-  } else if (document.exitFullscreen) {
-    document.exitFullscreen()
-  }
-}
-
 // 修改撒钱相关的方法
 const moneyContainer = ref(null)
 const moneyTimer = ref(null)
@@ -199,7 +154,6 @@ const autoMakeItRain = () => {
 
 onMounted(async () => {
   await getCityId('杭州')
-  updateClock()
   fetchWeather()
   // 每小时更新一次天气
   setInterval(fetchWeather, 3600000)
@@ -213,9 +167,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  if (timer.value) {
-    clearInterval(timer.value)
-  }
   if (moneyTimer.value) {
     clearTimeout(moneyTimer.value)
   }
@@ -252,17 +203,6 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.clock {
-  background-color: #222;
-  padding: 80px 100px;
-  border-radius: 20px;
-  color: #fff;
-  font-size: 160px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 40px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-}
 
 .colon {
   opacity: 1;
@@ -331,11 +271,7 @@ body {
   }
 }
 
-.date-info {
-  color: #fff;
-  font-size: 78px;
-  margin-bottom: 20px;
-}
+
 
 .weather-info {
   color: #fff;

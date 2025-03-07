@@ -71,7 +71,7 @@
     "vueVersion" : "3",
     "h5": {
         "router": {
-            "base": "/build/h5/" // 配置的运行的基础路径-打包到服务端需要加上-上线时候改为：critical-h5，测试环境：critical-h5-test
+            "base": "/build/h5/" // 配置的运行的基础路径-打包到服务端需要加上-上线时候改为：/build/h5/
         }
     }
 }
