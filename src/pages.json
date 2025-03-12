@@ -7,7 +7,25 @@
 			}
 		},
 		{
-			"path": "pages/clockTime/index"
+			"path": "pages/clockTime/index",
+		},
+		{
+			"path": "pages/myomaOfUterus/index",
+			"style": {
+				"navigationBarTitleText": "子宫肌瘤"
+			}
+		},
+		{
+			"path": "pages/myomaOfUterus/case/index",
+			"style": {
+				"navigationBarTitleText": "子宫肌瘤案列"
+			}
+		},
+		{
+			"path": "pages/myomaOfUterus/zhihuAnswer/index",
+			"style": {
+				"navigationBarTitleText": "喜喜家"
+			}
 		}
 	],
 	"globalStyle": {

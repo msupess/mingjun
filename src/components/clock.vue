@@ -1,16 +1,17 @@
 <template>
-  <div style="margin: 40px">
-    <div class="date-info">{{ displayDate }}</div>
-    <div class="clock" id="clock" v-html="displayTime"></div>
-    <template v-if="!isHiddenButon">
-      <div style="display: flex; justify-content: center">
-        <n-space>
-          <n-button type="warning"  round @click="toggleSeconds">{{ showSeconds ? '隐藏秒数' : '显示秒数' }}</n-button>
-          <n-button round type="error" @click="toggleFullscreen">全屏切换</n-button>
-        </n-space>
-      </div>
-    </template>
-    
+  <div style="background-color: #333;padding-top: 40px; box-sizing: border-box" :style="{ height: isHiddenButon ? '100vh' : 'unset' }">
+    <div style="overflow: hidden; margin: 0 40px;">
+      <div class="date-info">{{ displayDate }}</div>
+      <div class="clock" id="clock" v-html="displayTime"></div>
+      <template v-if="!isHiddenButon">
+        <div style="display: flex; justify-content: center">
+          <n-space>
+            <n-button type="warning"  round @click="toggleSeconds">{{ showSeconds ? '隐藏秒数' : '显示秒数' }}</n-button>
+            <n-button round type="error" @click="toggleFullscreen">全屏切换</n-button>
+          </n-space>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
