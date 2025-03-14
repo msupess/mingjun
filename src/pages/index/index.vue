@@ -4,7 +4,10 @@
   <div class="container">
     <!-- <div style="text-align:center;font-size:40px;color:red;letter-spacing:14px;">明均时钟</div> -->
     <!-- 添加考试倒计时 -->
-    <div class="exam-countdown">距离<span style="color: greenyellow">2025年初级会计考试</span>还有 <span style="color: yellow">{{ examCountdown }}</span> 天</div>
+    <n-space vertical>
+      <div class="exam-countdown">距离<span style="color: greenyellow">2025年初级会计考试</span>还有 <span style="color: yellow">{{ examCountdown }}</span> 天</div>
+      <div class="exam-countdown">距离<span style="color: greenyellow">2025年系统架构设计师</span>还有 <span style="color: yellow">{{ examCountdown2 }}</span> 天</div>
+    </n-space>
     <clock />
     <div class="weather-info">
       <template v-if="weatherData">
@@ -177,6 +180,15 @@ const examDate = new Date('2025-05-17')
 const examCountdown = computed(() => {
   const today = new Date()
   const diffTime = examDate.getTime() - today.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+})
+
+// 添加考试倒计时计算
+const examDate2 = new Date('2025-05-24')
+const examCountdown2 = computed(() => {
+  const today = new Date()
+  const diffTime = examDate2.getTime() - today.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
   return diffDays
 })
