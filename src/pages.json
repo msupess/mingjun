@@ -8,6 +8,21 @@
 		},
 		{
 			"path": "pages/clockTime/index",
+			"style": {
+				"navigationBarTitleText": "明♥️均时钟"
+			}
+		},
+		{
+			"path": "pages/healthTime/index",
+			"style": {
+				"navigationBarTitleText": "明♥️均中医养生时钟"
+			}
+		},
+		{
+			"path": "pages/testHealth/index",
+			"style": {
+				"navigationBarTitleText": "明♥️均中医养生时钟2"
+			}
 		},
 		{
 			"path": "pages/myomaOfUterus/index",

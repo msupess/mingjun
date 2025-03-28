@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #333;padding-top: 40px; box-sizing: border-box" :style="{ height: isHiddenButon ? '100vh' : 'unset' }">
+  <div style="background-color: #333;padding-top: 40px; box-sizing: border-box" :style="{ height: (isHiddenButon && fullPathS === '/pages/clockTime/index') ? '100vh' : 'unset' }">
     <div style="overflow: hidden; margin: 0 40px;">
       <div class="date-info">{{ displayDate }}</div>
       <div class="clock" id="clock" v-html="displayTime"></div>
@@ -19,9 +19,13 @@
 import { NButton, NSpace } from 'naive-ui'
 import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import { defineProps, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
+const fullPathS = ref(router.currentRoute.value.fullPath)
 
 const props = defineProps({
-  isHiddenButon: String
+  isHiddenButon: Boolean
 });
 
 const timer = ref(null)
@@ -122,7 +126,7 @@ onUnmounted(() => {
 @media screen and (max-width: 480px) {
   .clock {
     padding: 30px 40px;
-    font-size: 60px;
+    font-size: 40px;
     margin-bottom: 15px;
   }
 
@@ -156,7 +160,7 @@ onUnmounted(() => {
 
 @media screen and (max-width: 480px) {
   .date-info {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .weather-info {
